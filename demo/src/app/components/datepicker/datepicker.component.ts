@@ -4,7 +4,7 @@ import {DEMO_SNIPPETS} from './demos';
 @Component({
   selector: 'ngbd-datepicker',
   template: `
-    <ngbd-component-wrapper component="Datepicker">
+    <ngbd-component-wrapper component="Datepicker" [hasOverview]="overview">
       <ngbd-api-docs directive="NgbDatepicker"></ngbd-api-docs>
       <ngbd-api-docs directive="NgbInputDatepicker"></ngbd-api-docs>
       <ngbd-api-docs-class type="NgbDateStruct"></ngbd-api-docs-class>
@@ -49,4 +49,50 @@ import {DEMO_SNIPPETS} from './demos';
 })
 export class NgbdDatepicker {
    snippets = DEMO_SNIPPETS;
+   overview = `
+# NgbDatepicker
+
+Datepicker is a highly configurable component. It can be used either inline with \`NgbDatepicker\` component or as a dropdown on any input element with \`NgbInputDatepicker\` directive.
+
+\`// TODO: insert a demo here\`
+
+The list of most prominent features we provide:
+* complete customisation of a way particular day is displayed
+* ability to disable selection and limit navigation to some dates
+* range selection and multiple month view
+* multiple calendar implementations (Islamic, Hebrew, etc)
+* different date model support
+* custom i18n and RTL/LTR support
+
+### Display
+You have complete control of the date display using custom template and \`dayTemplate\` input: highlight some dates, display weekends in a different way, add your own tooltips, etc.
+
+\`\`\`javascript
+<ng-template #t let-date let-month> 
+	{{ date.day }}
+</ng-template>
+
+<ngbDatepicker [dayTemplate]=“t”/>
+\`\`\`
+
+### Disabling dates
+You can also disable and particular date or date range with \`markDisabled\`.
+
+### Range selection
+Range selection can be easily implemented using existing API and you can choose how many month can be displayed at once using \`displayMonths\` input.
+
+As mentioned before, you have the full control over each day display.
+
+### Date adapters
+You might be using a 
+
+### Multiple calendar support
+Datepicker comes with the following calendars:
+* \`NgbCalendarGregorian\` → Gregorian (default one)
+* \`NgbCalendarGregorian\` → Islamic Civil
+* Hebrew
+* 
+
+To be able to use a custom calendar, you have to provide a different \`NgbCalendar\` implementation   
+   `;
 }

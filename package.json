@@ -49,6 +49,8 @@
     "@angular/common": "6.0.0-rc.4",
     "@angular/core": "6.0.0-rc.4",
     "@angular/forms": "6.0.0-rc.4",
+    "@types/marked": "^0.3.0",
+    "marked": "^0.3.19",
     "rxjs": "6.0.0-turbo-rc.4"
   },
   "devDependencies": {

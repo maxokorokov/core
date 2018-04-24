@@ -1,8 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
-export const DEFAULT_TAB = 'examples';
-const VALID_TABS = [DEFAULT_TAB, 'api'];
+const VALID_TABS = ['examples', 'api', 'overview'];
 
 @Component({
   selector: 'ngbd-component-wrapper',
@@ -10,12 +9,12 @@ const VALID_TABS = [DEFAULT_TAB, 'api'];
 })
 export class ComponentWrapper {
 
-  @Input()
-  public component: string;
+  @Input() component: string;
+  @Input() hasOverview: string;
 
-  public activeTab: string;
+  activeTab: string;
 
-  public fileTypes = [
+  fileTypes = [
     ['T', 'HTML template file', 'btn-secondary'],
     ['C', 'Component typescript file', 'btn-info'],
   ];
@@ -26,7 +25,7 @@ export class ComponentWrapper {
       if (VALID_TABS.indexOf(tab) !== -1) {
         this.activeTab = tab;
       } else {
-        this.router.navigate(['..', DEFAULT_TAB], {relativeTo: this.route});
+        this.router.navigate(['..'], {relativeTo: this.route});
       }
       document.body.scrollIntoView();
     });

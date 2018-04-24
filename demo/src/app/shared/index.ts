@@ -13,6 +13,8 @@ import {Analytics} from './analytics/analytics';
 
 import {NgbdCodeComponent} from './code/code.component';
 import {CodeHighlightService} from './code/code-highlight.service';
+import {MarkdownService} from './markdown/markdown.service';
+import {NgbdMarkdownComponent} from './markdown/markdown.component';
 
 export {componentsList} from './side-nav/side-nav.component';
 
@@ -25,6 +27,7 @@ export {componentsList} from './side-nav/side-nav.component';
     PageWrapper,
     SideNavComponent,
     NgbdCodeComponent,
+    NgbdMarkdownComponent,
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
@@ -34,9 +37,10 @@ export {componentsList} from './side-nav/side-nav.component';
     ComponentWrapper,
     PageWrapper,
     SideNavComponent,
-    NgbdCodeComponent
+    NgbdCodeComponent,
+    NgbdMarkdownComponent
   ],
-  providers: [Analytics, CodeHighlightService]
+  providers: [Analytics, CodeHighlightService, MarkdownService]
 })
 export class NgbdSharedModule {
 }

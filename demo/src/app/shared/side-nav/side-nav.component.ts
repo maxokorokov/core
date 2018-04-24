@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import {Router} from '@angular/router';
 
 export const componentsList = [
@@ -25,12 +25,11 @@ export const componentsList = [
   templateUrl: './side-nav.component.html',
 })
 export class SideNavComponent {
-  @Input() activeTab: String;
   components = componentsList;
 
   constructor(private router: Router) {}
 
-  isActive(currentRoute: any[]): boolean {
-    return this.router.isActive(this.router.createUrlTree(currentRoute), true);
+  isActive(component) {
+    return this.router.url.startsWith(`/components/${component}`);
   }
 }
