@@ -3,6 +3,7 @@ import {NgbCalendarHijri} from './ngb-calendar-hijri';
 import {NgbDate} from '../ngb-date';
 import {NgbPeriod} from '../ngb-calendar';
 import {Injectable} from '@angular/core';
+import {NgbDateStruct} from '../ngb-date-struct';
 
 /**
  * Umalqura calendar is one type of Hijri calendars used in islamic countries.
@@ -186,7 +187,7 @@ export class NgbCalendarIslamicUmalqura extends NgbCalendarHijri {
   /**
   * Converts the current Hijri date to Gregorian.
   */
-  toGregorian(hijriDate: NgbDate): Date {
+  toGregorian(hijriDate: NgbDateStruct): Date {
     const hYear = hijriDate.year;
     const hMonth = hijriDate.month - 1;
     const hDay = hijriDate.day;
@@ -220,7 +221,7 @@ export class NgbCalendarIslamicUmalqura extends NgbCalendarHijri {
     return ISLAMIC_CIVIL.getDaysInIslamicMonth(month, year);
   }
 
-  getNext(date: NgbDate, period: NgbPeriod = 'd', number = 1) {
+  getNext(date: NgbDateStruct, period: NgbPeriod = 'd', number = 1): NgbDate {
     date = NgbDate.from(date);
 
     switch (period) {
@@ -228,21 +229,21 @@ export class NgbCalendarIslamicUmalqura extends NgbCalendarHijri {
         date = this.setYear(date, date.year + number);
         date.month = 1;
         date.day = 1;
-        return date;
+        return NgbDate.from(date);
       case 'm':
         date = this.setMonth(date, date.month + number);
         date.day = 1;
-        return date;
+        return NgbDate.from(date);
       case 'd':
-        return this.setDay(date, date.day + number);
+        return NgbDate.from(this.setDay(date, date.day + number));
       default:
-        return date;
+        return NgbDate.from(date);
     }
   }
 
-  getPrev(date: NgbDate, period: NgbPeriod = 'd', number = 1) { return this.getNext(date, period, -number); }
+  getPrev(date: NgbDateStruct, period: NgbPeriod = 'd', number = 1) { return this.getNext(date, period, -number); }
 
-  getWeekday(date: NgbDate) {
+  getWeekday(date: NgbDateStruct) {
     const day = this.toGregorian(date).getDay();
     // in JS Date Sun=0, in ISO 8601 Sun=7
     return day === 0 ? 7 : day;

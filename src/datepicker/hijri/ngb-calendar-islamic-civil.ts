@@ -2,6 +2,7 @@ import {NgbCalendarHijri} from './ngb-calendar-hijri';
 import {NgbDate} from '../ngb-date';
 import {NgbPeriod} from '../ngb-calendar';
 import {Injectable} from '@angular/core';
+import {NgbDateStruct} from '../ngb-date-struct';
 
 function isGregorianLeapYear(date: Date): boolean {
   const year = date.getFullYear();
@@ -52,7 +53,7 @@ export class NgbCalendarIslamicCivil extends NgbCalendarHijri {
    * Returns the equivalent JS date value for a give input islamic(civil) date.
    * `hijriDate` is an islamic(civil) date to be converted to Gregorian.
    */
-  toGregorian(hijriDate: NgbDate): Date {
+  toGregorian(hijriDate: NgbDateStruct): Date {
     const hYear = hijriDate.year;
     const hMonth = hijriDate.month - 1;
     const hDate = hijriDate.day;
@@ -105,7 +106,7 @@ export class NgbCalendarIslamicCivil extends NgbCalendarHijri {
     return length;
   }
 
-  getNext(date: NgbDate, period: NgbPeriod = 'd', number = 1) {
+  getNext(date: NgbDateStruct, period: NgbPeriod = 'd', number = 1): NgbDate {
     date = NgbDate.from(date);
 
     switch (period) {
@@ -113,27 +114,29 @@ export class NgbCalendarIslamicCivil extends NgbCalendarHijri {
         date = this.setYear(date, date.year + number);
         date.month = 1;
         date.day = 1;
-        return date;
+        return NgbDate.from(date);
       case 'm':
         date = this.setMonth(date, date.month + number);
         date.day = 1;
-        return date;
+        return NgbDate.from(date);
       case 'd':
-        return this.setDay(date, date.day + number);
+        return NgbDate.from(this.setDay(date, date.day + number));
       default:
-        return date;
+        return NgbDate.from(date);
     }
   }
 
-  getPrev(date: NgbDate, period: NgbPeriod = 'd', number = 1) { return this.getNext(date, period, -number); }
+  getPrev(date: NgbDateStruct, period: NgbPeriod = 'd', number = 1): NgbDate {
+    return this.getNext(date, period, -number);
+  }
 
-  getWeekday(date: NgbDate) {
+  getWeekday(date: NgbDateStruct) {
     const day = this.toGregorian(date).getDay();
     // in JS Date Sun=0, in ISO 8601 Sun=7
     return day === 0 ? 7 : day;
   }
 
-  getWeekNumber(week: NgbDate[], firstDayOfWeek: number) {
+  getWeekNumber(week: NgbDateStruct[], firstDayOfWeek: number) {
     // in JS Date Sun=0, in ISO 8601 Sun=7
     if (firstDayOfWeek === 7) {
       firstDayOfWeek = 0;

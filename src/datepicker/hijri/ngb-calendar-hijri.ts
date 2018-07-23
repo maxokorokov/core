@@ -1,4 +1,5 @@
 import {NgbDate} from '../ngb-date';
+import {NgbDateStruct} from '../ngb-date-struct';
 import {NgbPeriod, NgbCalendar} from '../ngb-calendar';
 import {Injectable} from '@angular/core';
 import {isNumber} from '../../util/util';
@@ -11,12 +12,12 @@ export abstract class NgbCalendarHijri extends NgbCalendar {
 
   getWeeksPerMonth() { return 6; }
 
-  isValid(date: NgbDate): boolean {
+  isValid(date: NgbDateStruct): boolean {
     return date && isNumber(date.year) && isNumber(date.month) && isNumber(date.day) &&
         !isNaN(this.toGregorian(date).getTime());
   }
 
-  setDay(date: NgbDate, day: number): NgbDate {
+  setDay(date: NgbDateStruct, day: number): NgbDateStruct {
     day = +day;
     let mDays = this.getDaysInIslamicMonth(date.month, date.year);
     if (day <= 0) {
@@ -36,25 +37,25 @@ export abstract class NgbCalendarHijri extends NgbCalendar {
     return date;
   }
 
-  setMonth(date: NgbDate, month: number): NgbDate {
+  setMonth(date: NgbDateStruct, month: number): NgbDateStruct {
     month = +month;
     date.year = date.year + Math.floor((month - 1) / 12);
     date.month = Math.floor(((month - 1) % 12 + 12) % 12) + 1;
     return date;
   }
 
-  setYear(date: NgbDate, yearValue: number): NgbDate {
+  setYear(date: NgbDateStruct, yearValue: number): NgbDateStruct {
     date.year = +yearValue;
     return date;
   }
 
   abstract getWeekday(date: NgbDate): number;
 
-  abstract getNext(date: NgbDate, period?: NgbPeriod, number?: number): NgbDate;
+  abstract getNext(date: NgbDateStruct, period?: NgbPeriod, number?: number): NgbDate;
 
-  abstract getPrev(date: NgbDate, period?: NgbPeriod, number?: number): NgbDate;
+  abstract getPrev(date: NgbDateStruct, period?: NgbPeriod, number?: number): NgbDate;
 
-  abstract getWeekNumber(week: NgbDate[], firstDayOfWeek: number): number;
+  abstract getWeekNumber(week: NgbDateStruct[], firstDayOfWeek: number): number;
 
   abstract getToday(): NgbDate;
 
@@ -67,7 +68,7 @@ export abstract class NgbCalendarHijri extends NgbCalendar {
   /**
    * Converts the current Hijri date to Gregorian.
    */
-  abstract toGregorian(hijriDate: NgbDate): Date;
+  abstract toGregorian(hijriDate: NgbDateStruct): Date;
 
   /**
    * Returns the number of days in a specific Hijri month.
