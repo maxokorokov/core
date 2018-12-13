@@ -1,11 +1,48 @@
-A typeahead example that gets values from a static <code>string[]</code>
-<ul>
-  <li><code>debounceTime</code> operator</li>
-  <li>kicks in only if 2+ characters typed</li>
-  <li>limits to 10 results</li>
-</ul>
+FOCUS 1
 
-<label for="typeahead-basic">Search for a state:</label>
-<input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"/>
+<label for="typeahead-focus">Search for a state:</label>
+<input
+  id="typeahead-focus1"
+  type="text"
+  class="form-control"
+  [(ngModel)]="modelFocus1"
+  [ngbTypeahead]="searchFocus1"
+  (focus)="focusFocus1$.next($event.target.value)"
+  (click)="clickFocus1$.next($event.target.value)"
+  #instanceFocus1="ngbTypeahead"
+/>
+<hr>
+<pre>Model: {{ model | json }}</pre>
+
+FOCUS 2
+
+<label for="typeahead-focus">Search for a state:</label>
+<input
+  id="typeahead-focus2"
+  type="text"
+  class="form-control"
+  [(ngModel)]="modelFocus2"
+  [ngbTypeahead]="searchFocus2"
+  (focus)="focusFocus2$.next($event.target.value)"
+  (click)="clickFocus2$.next($event.target.value)"
+  (blur)="instanceFocus2.dismissPopup()"
+  #instanceFocus2="ngbTypeahead"
+/>
+<hr>
+<pre>Model: {{ model | json }}</pre>
+
+FOCUS 3
+
+<label for="typeahead-focus">Search for a state:</label>
+<input
+  id="typeahead-focus3"
+  type="text"
+  class="form-control"
+  [(ngModel)]="modelFocus3"
+  [ngbTypeahead]="searchFocus3"
+  (focus)="focusFocus3$.next($event.target.value)"
+  (click)="clickFocus3$.next($event.target.value)"
+  #instanceFocus3="ngbTypeahead"
+/>
 <hr>
 <pre>Model: {{ model | json }}</pre>

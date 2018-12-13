@@ -4,7 +4,7 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
-  forwardRef,
+  forwardRef, Inject,
   Injector,
   Input,
   NgZone,
@@ -13,11 +13,11 @@ import {
   Output,
   Renderer2,
   TemplateRef,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {BehaviorSubject, fromEvent, Observable, Subscription} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, fromEvent, Observable, race, Subject, Subscription} from 'rxjs';
+import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 
 import {Live} from '../util/accessibility/live';
 import {Key} from '../util/key';
@@ -26,6 +26,7 @@ import {PlacementArray, positionElements} from '../util/positioning';
 import {isDefined, toString} from '../util/util';
 import {NgbTypeaheadConfig} from './typeahead-config';
 import {NgbTypeaheadWindow, ResultTemplateContext} from './typeahead-window';
+import {DOCUMENT} from '@angular/common';
 
 
 
@@ -61,7 +62,6 @@ let nextWindowId = 0;
   host: {
     '(blur)': 'handleBlur()',
     '[class.open]': 'isPopupOpen()',
-    '(document:click)': 'onDocumentClick($event)',
     '(keydown)': 'handleKeyDown($event)',
     '[autocomplete]': 'autocomplete',
     'autocapitalize': 'off',
@@ -152,13 +152,16 @@ export class NgbTypeahead implements ControlValueAccessor,
   activeDescendant: string;
   popupId = `ngb-typeahead-${nextWindowId++}`;
 
+  private _closed$ = new Subject<void>();
+
   private _onTouched = () => {};
   private _onChange = (_: any) => {};
 
   constructor(
       private _elementRef: ElementRef<HTMLInputElement>, private _viewContainerRef: ViewContainerRef,
       private _renderer: Renderer2, private _injector: Injector, componentFactoryResolver: ComponentFactoryResolver,
-      config: NgbTypeaheadConfig, ngZone: NgZone, private _live: Live) {
+      @Inject(DOCUMENT) private _document: any,
+      config: NgbTypeaheadConfig, private _ngZone: NgZone, private _live: Live) {
     this.container = config.container;
     this.editable = config.editable;
     this.focusFirst = config.focusFirst;
@@ -173,7 +176,7 @@ export class NgbTypeahead implements ControlValueAccessor,
     this._popupService = new PopupService<NgbTypeaheadWindow>(
         NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
 
-    this._zoneSubscription = ngZone.onStable.subscribe(() => {
+    this._zoneSubscription = _ngZone.onStable.subscribe(() => {
       if (this.isPopupOpen()) {
         positionElements(
             this._elementRef.nativeElement, this._windowRef.location.nativeElement, this.placement,
@@ -220,10 +223,22 @@ export class NgbTypeahead implements ControlValueAccessor,
     this._renderer.setProperty(this._elementRef.nativeElement, 'disabled', isDisabled);
   }
 
-  onDocumentClick(event) {
-    if (event.target !== this._elementRef.nativeElement) {
-      this.dismissPopup();
-    }
+  private _setCloseHandlers() {
+    this._ngZone.runOutsideAngular(() => {
+
+      const clicks$ = fromEvent<MouseEvent>(this._document, 'mouseup')
+        .pipe(takeUntil(this._closed$), filter(event => this._shouldCloseFromClick(event)));
+
+      race<Event>([clicks$]).pipe(takeUntil(this._closed$)).subscribe(() => this._ngZone.run(() => {
+        this.dismissPopup();
+        // this._changeDetector.markForCheck();
+      }));
+    });
+  }
+
+  private _shouldCloseFromClick(event: MouseEvent) {
+    console.log(event.target);
+    return ![this._elementRef.nativeElement, this._windowRef.location.nativeElement].some(el => el.contains(event.target));
   }
 
   /**
@@ -294,6 +309,8 @@ export class NgbTypeahead implements ControlValueAccessor,
       if (this.container === 'body') {
         window.document.querySelector(this.container).appendChild(this._windowRef.location.nativeElement);
       }
+
+      this._setCloseHandlers();
     }
   }
 
@@ -301,6 +318,7 @@ export class NgbTypeahead implements ControlValueAccessor,
     this._popupService.close();
     this._windowRef = null;
     this.activeDescendant = undefined;
+    this._closed$.next();
   }
 
   private _selectResult(result: any) {

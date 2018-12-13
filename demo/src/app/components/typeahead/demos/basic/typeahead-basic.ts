@@ -1,6 +1,9 @@
-import {Component} from '@angular/core';
-import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {Component, Injectable, ViewChild} from '@angular/core';
+import {Observable, Subject, merge, of} from 'rxjs';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap, filter} from 'rxjs/operators';
+
+import {NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
 
 const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado',
   'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia',
@@ -17,14 +20,54 @@ const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'C
   styles: [`.form-control { width: 300px; }`]
 })
 export class NgbdTypeaheadBasic {
-  public model: any;
 
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => term.length < 2 ? []
-        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
-    )
+  public modelFocus1: any;
+  public modelFocus2: any;
+  public modelFocus3: any;
 
+  @ViewChild('instanceFocus1') instanceFocus1: NgbTypeahead;
+  @ViewChild('instanceFocus2') instanceFocus2: NgbTypeahead;
+  @ViewChild('instanceFocus3') instanceFocus3: NgbTypeahead;
+
+  focusFocus1$ = new Subject<string>();
+  clickFocus1$ = new Subject<string>();
+
+  focusFocus2$ = new Subject<string>();
+  clickFocus2$ = new Subject<string>();
+
+  focusFocus3$ = new Subject<string>();
+  clickFocus3$ = new Subject<string>();
+
+  searchFocus1 = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.clickFocus1$.pipe(filter(() => !this.instanceFocus1.isPopupOpen()));
+    const inputFocus$ = this.focusFocus1$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => (term === '' ? states
+        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+    );
+  }
+
+  searchFocus2 = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.clickFocus2$.pipe(filter(() => !this.instanceFocus2.isPopupOpen()));
+    const inputFocus$ = this.focusFocus2$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => (term === '' ? states
+        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+    );
+  }
+
+  searchFocus3 = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.clickFocus3$.pipe(filter(() => !this.instanceFocus3.isPopupOpen()));
+    const inputFocus$ = this.focusFocus3$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => (term === '' ? states
+        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+    );
+  }
 }
