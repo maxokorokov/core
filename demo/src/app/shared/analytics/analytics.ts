@@ -14,7 +14,7 @@ export class Analytics {
   private _enabled: boolean;
 
   constructor(private _location: Location, private _router: Router) {
-    this._enabled = window.location.href.indexOf('ng-bootstrap.github.io') >= 0;
+    this._enabled = false;
   }
 
   /**

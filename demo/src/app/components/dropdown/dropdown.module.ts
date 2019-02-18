@@ -70,6 +70,7 @@ export const ROUTES = [
     NgbdComponentsSharedModule
   ],
   declarations: DEMO_DIRECTIVES,
+  exports: DEMO_DIRECTIVES,
   entryComponents: DEMO_DIRECTIVES
 })
 export class NgbdDropdownModule {

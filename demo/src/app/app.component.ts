@@ -26,13 +26,13 @@ export class AppComponent implements OnInit {
         const { fragment } = router.parseUrl(router.url);
         if (fragment) {
           setTimeout(() => {
-            const element = document.querySelector(`#${fragment}`);
-            if (element) {
-              element.scrollIntoView();
-            }
+            // const element = document.querySelector(`#${fragment}`);
+            // if (element) {
+            //   element.scrollIntoView();
+            // }
           }, 0);
         } else {
-          window.scrollTo({ top: 0 });
+          // window.scrollTo({ top: 0 });
         }
       });
   }

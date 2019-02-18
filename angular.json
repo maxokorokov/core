@@ -55,7 +55,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "demo/dist",
+            "outputPath": "demo/dist/browser",
             "index": "demo/src/public/index.html",
             "main": "demo/src/main.ts",
             "polyfills": "demo/src/polyfills.ts",
@@ -109,6 +109,14 @@
             "production": {
               "browserTarget": "demo:build:production"
             }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "demo/dist/server",
+            "main": "demo/src/main.server.ts",
+            "tsConfig": "demo/tsconfig.server.json"
           }
         },
         "lint": {
